@@ -1,0 +1,243 @@
+FORMAT: 1A
+HOST: https://apis.live.net/v5.0
+
+# LiveConnect REST API
+Live Connect is a REST API for accessing OneDrive and Outlook.com data.
+
+# Group OneDrive Folders
+The following operations are the basics for operating with OneDrive.
+
+## Root Folder [/me/skydrive{?access_token}]
+Access folders in OneDrive either from the root, by named folder, or by ID.
+
++ Parameters
+    + access_token (optional, string, `ABCD1234`) ... Access token from authentication, if not using Authentication header.
+
++ Model
+
+    + Headers
+
+            Content-Type: application/json
+            X-MSNSERVER: server-name
+            X-HTTP-Live-Request-Id: identifier
+
+    + Body
+
+            {
+            "id": "folder.0000000000000000",
+            "from": {
+                "name": null,
+                "id": null
+            },
+            "name": "SkyDrive",
+            "description": "",
+            "parent_id": null,
+            "size": 95637361092,
+            "upload_location": "https://apis.live.net/v5.0/folder.0000000000000000/files/",
+            "comments_count": 0,
+            "comments_enabled": false,
+            "is_embeddable": false,
+            "count": 24,
+            "link": "https://onedrive.live.com?cid=0000000000000000",
+            "type": "folder",
+            "shared_with": {
+                "access": "Just me"
+            },
+            "created_time": null,
+            "updated_time": "2014-07-08T17:39:45+0000",
+            "client_updated_time": "2013-06-20T02:54:44+0000"
+            }
+
+### Get Folder Metadata [GET]
+Get metadata on the root folder for a user's OneDrive
+
++ Response 200
+
+    [Root Folder][]
+
++ Response 401
+
+    + Body
+
+            { "error": {
+                "code": "",
+                "message": ""
+            }}
+
+### Create a new top level folder [POST]
+Create a new folder at the top level of a user's OneDrive
+
++ Request
+
+    + Body
+    
+            {
+                "name": "new folder name",
+                "description": "folder description"
+            }
+
++ Response 200
+
+    [Root Folder][]
+
+## Named Folders [/me/skydrive/{folder_name}{?access_token}]
+Access a named folder in OneDrive
+
++ Parameters
+
+    + folder_name (required, string, `my_documents`) ... Identifer for the named folder to access
+    
+        + Values
+            + `camera_roll`
+            + `my_documents`
+            + `my_photos`
+            + `public_documents`
+    
+    + access_token (optional, string, `abcd12356`) ... Access token from authentication, if not using Authentication header.
+    
+### Get Named Folder Properties [GET]
+
++ Response 200
+    
+    [Root Folder][]
+
+### Create Folder Under Named Folder [POST]
+
++ Request
+
+    + Body
+    
+            {
+                "name": "new folder name",
+                "description": "folder description"
+            }
+
++ Response 200
+
+    [Root Folder][]
+    
+## Folders by ID [/me/skydrive/{folder_id}{?access_token}]
+Access a named folder in OneDrive
+
++ Parameters
+
+    + folder_id (required, string, `folder.0000000000000000`) ... Identifer for the folder to access
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+    
+### Folder Properties [GET]
+
++ Response 200
+    
+    [Root Folder][]
+
+### Create Subfolder [POST]
+
++ Request
+
+    + Body
+    
+            {
+                "name": "new folder name",
+                "description": "folder description"
+            }
+
++ Response 200
+
+    [Root Folder][]    
+    
+### Rename Folder [PUT]
+Rename the folder or change the folder description
+
++ Request
+
+    + Body
+    
+            {
+                "name": "new folder name",
+                "description": "folder description"
+            }
+
++ Response 200
+
+    [Root Folder][]
+
+### Delete Folder [DELETE]
+Delete the specified folder
+
++ response 200
+
+
+# Group OneDrive Files
+Retrieve the files contained within a folder.
+
+## Retrieve Files [/me/skydrive/{folder_id}/files{?access_token}]
+
++ Model (application/json)
+
+    + Body
+    
+            {
+                "data": [
+                    {
+                        "id": "file.0000000000000",
+                        "from": {
+                            "name": "owner name",
+                            "id": "owner_id"
+                        },
+                        "name": "filename.txt",
+                        "description": "file description",
+                        "parent_id": "folder.00000000000",
+                        "size": 1024,
+                        "upload_location": "https://foo.bar/upload/location",
+                        "comment_count": 0,
+                        "comments_enabled": false,
+                        "is_embeddable": false,
+                        "count": 0,
+                        "link": "https://foo.bar/content/link",
+                        "shared_with": "Just me",
+                        "created_time": "timestamp",
+                        "updated_time": "timestamp",
+                        "clientupdatedtime": ""
+                    }
+                ]
+            }
+            
++ Parameters
+
+    + folder_id (required, string, `folder.0000000000000000`) ... Identifer for the folder to access
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
+### Enumerate Files [GET]
+Enumerate the files within the specified folder.
+
++ Response 200
+    
+    [Retrieve Files][]
+
+## Upload Files [/me/skydrive/{folder_id}/files/{file_name}{?access_token}{&overwrite}]
+
+### Upload a file [PUT]
+
++ Parameters
+
+    + folder_id (required, string, `folder.0000000000000000`) ... Identifer for the folder to access
+
+    + file_name (required, string, `newFile1.txt`) ... Name of the file being uploaded
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+    
+    + overwrite (optional, string, `true`) ... Choose how to handle the upload if a file already exists with the same name
+    
+        + Values
+            + `false`
+            + `true`
+            + `ChooseNewName`
+        
+
++ Request (application/binary)
+
++ Response 200
+
+
