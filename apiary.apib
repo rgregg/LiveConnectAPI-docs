@@ -168,8 +168,8 @@ Delete the specified folder
 + response 200
 
 
-# Group OneDrive Files
-Retrieve the files contained within a folder.
+# Group Working with Files
+How to download, upload, enumerate files in a folder, and search for files based on filename.
 
 ## Folder Contents [/me/skydrive/{folder_id}/files]
 
@@ -254,12 +254,8 @@ The limit and offset query parameters can be used to page the results of a large
 
     [Folder Contents][]
 
-
-
-
-## Upload Files [/me/skydrive/{folder_id}/files/{file_name}{?access_token}{&overwrite}]
-
-### Upload a file [PUT]
+# PUT /me/skydrive/{folder_id}/files/{file_name}{?access_token}{&overwrite}
+Upload a file to an existing folder. This is the preferred method for uploading files.
 
 + Parameters
 
@@ -280,6 +276,26 @@ The limit and offset query parameters can be used to page the results of a large
 + Request (application/binary)
 
 + Response 200
+
+# POST /me/skydrive/files{?access_token}
+Upload a file to a folder, for clients that cannot support the PUT operation. This method should be avoided if possible.
+
++ Parameters
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+    
++ Request (multipart/form-data; boundary=A300x)
+
+        --A300x
+        Content-Disposition: form-data; name="file"; filename="HelloWorld.txt"
+        Content-Type: application/octet-stream
+        
+        Hello, World!
+        --A300x--
+
++ Response 200
+
+
 
 ## Search [/me/skydrive/search{?q,access_token}]
 
