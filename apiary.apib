@@ -171,7 +171,7 @@ Delete the specified folder
 # Group OneDrive Files
 Retrieve the files contained within a folder.
 
-## Retrieve Files [/me/skydrive/{folder_id}/files{?access_token}]
+## Folder Contents [/me/skydrive/{folder_id}/files]
 
 + Model (application/json)
 
@@ -203,18 +203,59 @@ Retrieve the files contained within a folder.
                 ]
             }
             
+
+# GET /me/skydrive/{folder_id}/files{?access_token}
+Enumerate the files within the specified folder.
+
 + Parameters
 
     + folder_id (required, string, `folder.0000000000000000`) ... Identifer for the folder to access
 
     + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
 
-### Enumerate Files [GET]
-Enumerate the files within the specified folder.
 
 + Response 200
     
-    [Retrieve Files][]
+    [Folder Contents][]
+
+# GET /me/skydrive/{folder_id}/files{?filter,access_token}
+Filter the returned types of files to specific values
+
++ Parameters
+
+    + filter (required, string, `photos`) ... Type of filter to apply. Multiple filters can be combined by separating the value with a comma. For example: filters=videos,audio
+        
+        + Values
+        
+            + `albums`
+            + `audio`
+            + `folders`
+            + `photos`
+            + `videos`
+            
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
++ Response 200
+
+    [Folder Contents][]
+
+# GET /me/skydrive/{folder_id}/files{?limit,offset,access_token}
+The limit and offset query parameters can be used to page the results of a larger folder.
+
++ Parameters
+
+    + limit (optional, number, `50`) ... Limit the number of items returned from the query
+    
+    + offset (optional, number, `4`) ... Specify the first entry to return from the collection.
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
++ Response 200
+
+    [Folder Contents][]
+
+
+
 
 ## Upload Files [/me/skydrive/{folder_id}/files/{file_name}{?access_token}{&overwrite}]
 
@@ -240,4 +281,17 @@ Enumerate the files within the specified folder.
 
 + Response 200
 
+## Search [/me/skydrive/search{?q,access_token}]
 
++ Parameters
+
+    + q (required, string, `family`) ... Query text used to find files and folders that match the text provided.
+    
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
+### Find Matching Filenames [GET]
+    
++ Response 200
+
+    [Folder Contents][]
+    
