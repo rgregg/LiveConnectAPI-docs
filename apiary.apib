@@ -255,7 +255,8 @@ The limit and offset query parameters can be used to page the results of a large
     [Folder Contents][]
 
 # PUT /me/skydrive/{folder_id}/files/{file_name}{?access_token}{&overwrite}
-Upload a file to an existing folder. This is the preferred method for uploading files.
+Upload the contents of a file, or optionally replace the contents of an existing file.
+
 
 + Parameters
 
@@ -277,12 +278,43 @@ Upload a file to an existing folder. This is the preferred method for uploading 
 
 + Response 200
 
-# POST /me/skydrive/files{?access_token}
-Upload a file to a folder, for clients that cannot support the PUT operation. This method should be avoided if possible.
+# POST /me/skydrive/files{?access_token,state,redirect_uri}
+Upload a file to a folder, for clients that cannot support the PUT operation. This method should be 
+avoided if possible. When using **POST** method the contents of the request must be formatted as
+multipart/form-data. You provide the file to upload in a multipart section, while providing the 
+file name in the `Content-Disposition` header's *filename* parameter. For more information see
+[RFC 2388](http://go.microsoft.com/fwlink/p/?linkid=233309). **Note** that only one multipart section
+is supported in the body of the request.
+
+**Important** On platforms that support the **PUT** request, **PUT** should be used to upload files to OneDrive
+when possible to avoid errors that can occur when **POST** is used.
+
+If you use the optional `redirect_uri` parameter, OneDrive returns an HTML result similar to the following
+when the upload has completed:
+
+        <html><head>
+            <script type="text/javascript">
+                window.location = "http://contoso.com/uploadcb.htm#state=myNewFileState&result={encoded json}"
+            </script>
+        </head></html>
+        
+The encoded JSON in the `result` query-string parameter will have two properties, `id` and `soruce` refering 
+to the uploaded file.
 
 + Parameters
 
     + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+    
+    + redirect_uri (optional, string `http://contoso.com/uploadcb.htm`)
+        Optionally you can instruct OneDrive to notify the web browser when the upload finishes. You can also
+        attach a unique identifier to each upload request so that you can identify a particular file if you 
+        are uploading multiple files in quick succession. Specify the path to your callback page in this
+        parameter.
+        
+        **Note** the domain portion of the path must match the redirect domain that you specified 
+        in the Live SDK app management site for the corresponding client ID.
+    
+    + state (optional, string, `myNewFileState`) ... Unique identifer for callback to indicate the file being uploaded.
     
 + Request (multipart/form-data; boundary=A300x)
 
@@ -295,6 +327,28 @@ Upload a file to a folder, for clients that cannot support the PUT operation. Th
 
 + Response 200
 
+# GET /me/skydrive/{file_id}/content{?access_token,download}
+Download the contents of a file, photo, video, or audio. The **wl.skydrive** scope is required.
+
+**Tip** You can instruct the user's web browser to prompt the user to save the file that's downloading 
+instead of having the browser try to download and display the file directly in its own window. To do 
+this, set the optional download parameter to true. This will add the `Content-Disposition: attachment` 
+header to the response.
+
++ Parameters
+
+    + file_id (required, string, `file.abcd1234.abcd1234!567`) ... ID for the file to download
+    
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+    
+    + download = `false` (optional, boolean) ... Use the download parameter to set the Content-Disposition header on the response.
+    
+        + Values
+        
+            + `false`
+            + `true`
+
++ Response 200
 
 
 ## Search [/me/skydrive/search{?q,access_token}]
@@ -311,3 +365,54 @@ Upload a file to a folder, for clients that cannot support the PUT operation. Th
 
     [Folder Contents][]
     
+# Group Getting User Data
+To access a user's data, the **wl.basic** scope must be requested during authorization.
+
+## User Information [/me]
+
++ Model (application/json)
+
+            {
+                "id": "contact.120312301230123010230123",
+                "first_name": "Roberto",
+                "last_name": "Tamburello",
+                "name": "Roberto Tamburello",
+                "gender": "male",
+                "locale": "en_US"
+            }
+
+# GET /{user_id}{?access_token}
+Retrieve user information for a contact specified by `user_id`. You can use the shortcut `me` to reference
+the signed in user.
+
++ Parameters
+
+    + user_id (required, string, `me`) ... ID value for the user who's information should be retrieved.
+    
+        + Values
+            + `me`
+            + `contact.c13123123010230123`
+    
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
++ Response 200
+
+    [User Information][]
+
+# GET /{user_id}/friends{?access_token}
+Retrieve the friends of the contact specified by `user_id`. You can use the shortcut `me` to reference
+the signed in user.
+
++ Parameters
+
+    + user_id (required, string, `me`) ... ID value for the user who's information should be retrieved.
+    
+        + Values
+            + `me`
+            + `contact.c13123123010230123`
+    
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
++ Response 200
+
+
