@@ -74,7 +74,7 @@ Access folders in OneDrive either from the root, by named folder, or by ID.
             }
 
 ### Get Folder Metadata [GET]
-Get metadata on the root folder for a user's OneDrive
+Get metadata on the root folder for a user's OneDrive.
 
 + Response 200
 
@@ -90,7 +90,7 @@ Get metadata on the root folder for a user's OneDrive
             }}
 
 ### Create a new top level folder [POST]
-Create a new folder at the top level of a user's OneDrive
+Create a new folder at the top level of a user's OneDrive. The **wl.skydrive_update** scope is required.
 
 + Request
 
@@ -121,12 +121,14 @@ Access a named folder in OneDrive
     + access_token (optional, string, `abcd12356`) ... Access token from authentication, if not using Authentication header.
     
 ### Get Named Folder Properties [GET]
+Return the properties, including the id, of a named folder.
 
 + Response 200
     
     [Root Folder][]
 
 ### Create Folder Under Named Folder [POST]
+Add a new folder as a child of a named folder. The **wl.skydrive_update** scope is required.
 
 + Request
 
@@ -157,6 +159,7 @@ Access a named folder in OneDrive
     [Root Folder][]
 
 ### Create Subfolder [POST]
+Add a new folder as a child of an existing folder. The **wl.skydrive_update** scope is required.
 
 + Request
 
@@ -172,7 +175,7 @@ Access a named folder in OneDrive
     [Root Folder][]    
     
 ### Rename Folder [PUT]
-Rename the folder or change the folder description
+Rename the folder or change the folder description. The **wl.skydrive_update** scope is required.
 
 + Request
 
@@ -188,12 +191,12 @@ Rename the folder or change the folder description
     [Root Folder][]
 
 ### Delete Folder [DELETE]
-Delete the specified folder
+Deletes the specified folder from the user's OneDrive. The **wl.skydrive_update** scope is required.
 
-+ response 200
++ Response 200
 
 
-# Group Working with Files
+# Group Working with Folder Contents
 How to download, upload, enumerate files in a folder, and search for files based on filename.
 
 ## Folder Contents [/me/skydrive/{folder_id}/files]
@@ -227,7 +230,6 @@ How to download, upload, enumerate files in a folder, and search for files based
                     }
                 ]
             }
-            
 
 # GET /me/skydrive/{folder_id}/files{?access_token}
 Enumerate the files within the specified folder.
@@ -302,8 +304,10 @@ Upload the contents of a file, or optionally replace the contents of an existing
 
 + Response 200
 
+# Group Working with File Contents
+
 # PUT /me/skydrive/{file_id}{?access_token}
-Change the data stored about a file, photo, video, or audio.
+Change the data stored about a file, photo, video, or audio. The **wl.skydrive_update** scope is required.
 
 + Parameters
 
@@ -408,6 +412,38 @@ header to the response.
 
 + Response 200
 
+
+## Move and Copy Files or Folders [/me/skydrive/{file_or_folder_id}{?access_token}]
+To move a folder, file, photo, video, or audio, use the MOVE method. The **wl.skydrive_update** scope is
+required. The source can be anything except the root of a OneDrive. The destination must be the folder to
+which the item will be moved.
+
++ Parameters
+
+    + file_or_folder_id (required, string, `file.0000000000000000.000000000000!000`) ... Identifer for the file or folder that is the source item in the move or copy.
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
+### Move a File [MOVE]
+
++ Request (application/json)
+
+            {
+                "destination": "folder.a123123abef123.a6b123!123"
+            }
+
++ Response 200
+
+### Copy a File [COPY]
+
++ Request (application/json)
+
+            {
+                "destination": "folder.a123123abef123.a6b123!123"
+            }
+
++ Response 200
+
 ## Search [/me/skydrive/search{?q,access_token}]
 
 + Parameters
@@ -415,6 +451,7 @@ header to the response.
     + q (required, string, `family`) ... Query text used to find files and folders that match the text provided.
     
     + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+To find a file or folder with a particular name across a user's OneDrive, use the search action.
 
 ### Find Matching Filenames [GET]
     
@@ -485,6 +522,7 @@ the signed in user.
                 ]
             }
 
+
 # Group Links to Files and Folders
 Your app can get the following types of links to OneDrive folders and files.
 
@@ -529,7 +567,6 @@ Get a read-write link to the file or folder. **Note** requesting this link will 
 
             { "link": "https://onedrive.live.com/redir.aspx?cid=..." }
 
-
 # GET /{file_id}/embed{?access_token}
 Get HTML definition for embedding this file in another page.
 
@@ -542,6 +579,51 @@ Get HTML definition for embedding this file in another page.
 + Response 200
 
             { "embed_html": "<iframe src=\"https://onedrive.live.com/....\"></iframe>" }
+
+# GET /skydrive/get_item_preview{?type,url}
+Get a preview of an item by providing the sharing link to the item.
+
+Four preview types are available:
+
++ `thumbnail`
++ `small` which returns a maximum of 100x100 pixel preview
++ `album` which returns a maximum 200x200 pixel preview
++ `normal` which returns a maximum 800x800 pixel preview
+
+**Notes**
+
++ To make the `get_item_preview` request you don't need to request any scopes or provide an access token. This
+request uses pre-authenticated URLs and as such does not require a signed-in user.
+
++ If the item is not a photo and a preview is associated with the item, a thumbnail preview is displayed and 
+the type parameter is ignored even if provided.
+
++ If a particular size of preview doesn't exist, the next-largest size preview available is used. If no 
+preview is assoicated with the item a 404 (Not Found) error is returned.
+
++ The value of the url query-string parameter must be URL encoded. For example, use %3A to 
+represent a colon (:), %2F for a forward slash (/), %3F for a question mark (?), and %26 for the 
+ampersand (&) character.
+
++ Parameters
+
+    + type = `thumbnail` (optional, string) ... Specify the type of preview to request.
+
+        + Values
+            + `thumbnail`
+            + `small`
+            + `album`
+            + `normal`
+    
+    + url (required, string, `https://onedrive.live.com/redir.aspx?cid=123...`) ... The sharing link to the content a preview should be generated for.
+
++ Response 302
+
+    + Headers
+    
+            Location: https://onedrive.live.com/foo/bar.jpg
+
++ Response 404
 
 
 # Group Shared Files
@@ -568,6 +650,22 @@ Retrieve a list of all files the specified user has shared with the signed-in us
     + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
 
 + Response 200 (application/json)
+
+    [Folder Contents][]
+
+
+
+
+# Group Recent Files
+
+# GET /me/skydrive/recent_docs{?access_token}
+Return a list of files that have recently be used by the user. The **wl.skydrive** scope is required.
+
++ Parameters
+    
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
++ Response 200
 
     [Folder Contents][]
 
