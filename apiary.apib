@@ -504,6 +504,7 @@ requests a read-write link for a file and then later requests a read-only link f
 permission for that link is revoked.
 
 # GET /{file_or_folder_id}/shared_read_link{?access_token}
+Get a read-only link to the file or folder. **Note** requesting this link will replace any previously requested read-write link.
 
 + Parameters
 
@@ -516,6 +517,7 @@ permission for that link is revoked.
             { "link": "https://onedrive.live.com/redir.aspx?cid=..." }
 
 # GET /{file_or_folder_id}/shared_edit_link{?access_token}
+Get a read-write link to the file or folder. **Note** requesting this link will replace any previously requested read-only link.
 
 + Parameters
 
@@ -529,6 +531,7 @@ permission for that link is revoked.
 
 
 # GET /{file_id}/embed{?access_token}
+Get HTML definition for embedding this file in another page.
 
 + Parameters
 
@@ -541,5 +544,47 @@ permission for that link is revoked.
             { "embed_html": "<iframe src=\"https://onedrive.live.com/....\"></iframe>" }
 
 
+# Group Shared Files
+To discover all OneDrive objects that are shared with the signed-in user, your app needs the **wl.contacts_skydrive** scope.
+
+# GET /me/skydrive/shared{?access_token}
+Retrieve a list of all files the signed in user is currently sharing.
+
++ Parameters
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
++ Response 200 (application/json)
+
+    [Folder Contents][]
+
+# GET /{user_id}/shared{?access_token}
+Retrieve a list of all files the specified user has shared with the signed-in user.
+
++ Parameters
+    
+    + user_id (required, string, `0d12300af000a01`) ... User ID for the owner of files that have been shared.
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
++ Response 200 (application/json)
+
+    [Folder Contents][]
 
 
+# Group Quota Management
+
+# GET /me/skydrive/quota{?access_token}
+Use this API to determine the user's total OneDrive quota space and how much is still available. Values
+are returned in bytes.
+
++ Parameters
+
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+
++ Response 200 (application/json)
+
+            {
+                "quota": 26843545600,
+                "available": 26805319016
+            }
