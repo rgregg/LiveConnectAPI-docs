@@ -4,6 +4,26 @@ HOST: https://apis.live.net/v5.0
 # LiveConnect REST API
 Live Connect is a REST API for accessing OneDrive and Outlook.com data.
 
+# Group Authentication
+Before you can access data using the Live Connect API, your app needs to request permissions
+from the user to access the data the user has stored in OneDrive.
+
+The signed in user must consent to letting your app access that data. The Live SDK divides 
+this consent into categories, called scopes. Some common scopes that your app might want to
+request are:
+
++ **wl.basic** - Allows access to a user's basic information
++ **wl.emails** - Allows access to a user's email addresses
++ **wl.photos** - Allows access to a OneDrive user's photos
++ **wl.skydrive** - Allows read-only access to a OneDrive user's content
++ **wl.skydrive_update** - Allows read-write access to a OneDrive user's content
+
+The Live Connect API uses OAuth 2.0 to enable users to sign in and provide consent to use your
+app. When a user signs in to your app, he or she is redirected to a window that is hosted by
+the Microsoft account authorization web service. After the user grants permission to access his
+or her data, your app can begin working with the API.
+
+
 # Group OneDrive Folders
 The following operations are the basics for operating with OneDrive.
 
@@ -365,7 +385,7 @@ header to the response.
 
     [Folder Contents][]
     
-# Group Getting User Data
+# Group Getting Account Information
 To access a user's data, the **wl.basic** scope must be requested during authorization.
 
 ## User Information [/me]
@@ -413,6 +433,18 @@ the signed in user.
     
     + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
 
-+ Response 200
++ Response 200 (application/json)
 
+            { 
+                "data": [
+                { 
+                    "id": "00000000000000",
+                    "name": "Robert Tamburello"
+                },
+                {
+                    "id": "000000000000001",
+                    "name": "Ryan Gregg"
+                }
+                ]
+            }
 
