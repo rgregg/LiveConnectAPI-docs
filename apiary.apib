@@ -35,7 +35,11 @@ Either way is valid on most API calls. Some API calls require a specific pattern
 either the header or the query-string parameter, it will be listed as required.
 
 # Group OneDrive Folders
-The following operations are the basics for operating with OneDrive.
+OneDrive is represented like a traditional file system, with folders and files. At the top-most level
+the root folder represents the top of the hierarchy, or the Drive in a traditional file system. With in
+a drive, there are multiple folders. Each folder may contain zero or more files or folders. There are also
+several named folders created automatically when a OneDrive is provisioned. These named folders can be accessed
+by name, since the user may decide to move them to different locations within their OneDrive hierarchy.
 
 ## Root Folder [/me/skydrive{?access_token}]
 Access folders in OneDrive either from the root, by named folder, or by ID.
