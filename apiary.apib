@@ -34,7 +34,7 @@ to every API call, or you can use the `Authorization:` header, like this:
 Either way is valid on most API calls. Some API calls require a specific pattern. When an API call requires
 either the header or the query-string parameter, it will be listed as required.
 
-# Group OneDrive Folders
+# Group Folders
 OneDrive is represented like a traditional file system, with folders and files. At the top-most level
 the root folder represents the top of the hierarchy, or the Drive in a traditional file system. With in
 a drive, there are multiple folders. Each folder may contain zero or more files or folders. There are also
@@ -42,7 +42,8 @@ several named folders created automatically when a OneDrive is provisioned. Thes
 by name, since the user may decide to move them to different locations within their OneDrive hierarchy.
 
 ## Root Folder [/me/skydrive{?access_token}]
-Access folders in OneDrive either from the root, by named folder, or by ID.
+The root folder is the highest level in the OneDrive folder hierarchy. The root usually contains 
+multiple folders and may contain files as well. It cannot be renamed, moved, copied, or deleted.
 
 + Parameters
     + access_token (optional, string, `ABCD1234`) ... Access token from authentication, if not using Authentication header.
@@ -115,7 +116,12 @@ Create a new folder at the top level of a user's OneDrive. The **wl.skydrive_upd
     [Root Folder][]
 
 ## Named Folders [/me/skydrive/{folder_name}{?access_token}]
-Access a named folder in OneDrive
+Named folders represent special folders that are automatically created by OneDrive when a new
+account is provisioned. These folders may have different display names because of the region
+where the user's account is located.
+
+**TIP** Named folders can be accessed by folder ID, once known, or by name. Accessing a named folder
+by name is prefered, since it reduces the round trips necessary with the service.
 
 + Parameters
 
@@ -153,7 +159,10 @@ Add a new folder as a child of a named folder. The **wl.skydrive_update** scope 
     [Root Folder][]
     
 ## Folders by ID [/me/skydrive/{folder_id}{?access_token}]
-Access a named folder in OneDrive
+All folders can be accessed by folder ID. User defined folders can only be accessed by Folder ID, since
+the Live Connect API is ID based (not path based). To navigate to a folder with an unknown folder ID, your
+app will need to 'walk' the folder hierarchy, starting at the root, through the elements of the known path,
+locating a folder with the proper name at each level and looking it up by folder ID.
 
 + Parameters
 
