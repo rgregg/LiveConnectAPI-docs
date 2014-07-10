@@ -12,7 +12,40 @@ provide the Live Connect API.
 **Important:** At this time this is unofficial documentation. For the official Live Connect documentation
 please see [dev.onedrive.com](http://dev.onedrive.com).
 
-# Group Authentication
+# Allowed HTTP Requests
+The Live Connect REST API supports these standard HTTP verbs.
+
+- `GET` - returns a representation of a resource.
+- `POST` - adds a new resource to a collection.
+- `PUT` - updates a resource at the location pointed by the URL or creates a new resource, if it doesn't exist.
+- `DELETE` - deletes a resource.
+- `MOVE` - moves the location of a resource.
+- `COPY` - duplicates a resource.
+
+# Usual Server Responses
+Here are the possible status codes that may be returned by the Live Connect API.
+
+- 200 `OK` - the request was sucessful
+- 201 `Created` - the request was sucessful and a resource was created.
+- 204 `No Content` - the request was successful but there is no representation to return (i.e. the response is empty, or the resource was deleted)
+- 302 `Redirect` - the request should be resubmitted to a different known location, specified by the `Location:` header.
+- 400 `Bad Request` - the request could not be understood or was missing a required parameter. See error message for more details.
+- 401 `Unauthorized` - the request was either missing a access_token or the token was invalid or expired.
+- 403 `Forbidden` - the request was not authorized or the user has not been granted permissions.
+- 404 `Not Found` - resource was not found.
+- 405 `Method Not Allowed` - requested method is not supported for the resource.
+- 408 `Timeout` - the request timed out.
+- 409 `Conflict` - the request failed due to an edit conflict.
+- 410 `Gone` - the resource is no longer supported
+- 413 `Too Large` - the request entity body was too large
+- 415 `Unsupported Media Type` - the request entity body was an invalid media type.
+- 420 `Method Failure` - the request was throttled. Throttling occurs on a per/app per/user basis.
+- 499 `Connection Issue` - there is a connnection issue with the client.
+- 500 `Internal Error` - the server had an unexpected error.
+- 503 `Service Unavailable` - the service is unavailable.
+- 507 `Insufficient Storage` - the user doesn't have enough available storage to process the request.
+
+# Authentication
 
 Before you can access data using the Live Connect API, your app needs to request permissions
 from the user to access the data the user has stored in OneDrive.
@@ -378,6 +411,13 @@ Download the contents of a file, photo, video, or audio. The **wl.skydrive** sco
 instead of having the browser try to download and display the file directly in its own window. To do 
 this, set the optional download parameter to true. This will add the `Content-Disposition: attachment` 
 header to the response.
+
+### Support for Resumable Downloads
+The Live SDK provides support for resumable downloads by using the [HTTP
+Range header](http://go.microsoft.com/fwlink/p/?linkid=233595). If a download is interrupted, an app can continue the download at a later 
+time by requesting only the byte range for the remainder of the file. This is 
+particularly useful when downloading larger files, or in situations where network 
+reliability is less than optimal.
 
 + Parameters
 
@@ -746,3 +786,248 @@ are returned in bytes.
                 "quota": 26843545600,
                 "available": 26805319016
             }
+
+# Group Working with Albums
+
+## Albums [/me/albums{?access_token}]
+
+### Listing Albums [GET]
+
++ Response 200 (application/json)
+
+## Shared Albums [/{user_id}/albums{?access_token}]
+
+### Listing Shared Albums [GET]
+
++ Response 200 (application/json)
+
+
+# Group Permissions
+
+## Permissions [/me/permissions]
+
+### List Current Permission Scopes [GET]
+Retrieve a collection of the scopes currently authorized by the user
+
++ Response 200 (application/json)
+
+            {
+                "data": [
+                    "wl.basic": 1,
+                    "wl.offline_access": 1,
+                    "wl.signin": 1
+                    ]
+            }
+
+# Group REST Objects
+In the Live Connect API, REST objects contain categories of information. Objects consist of a
+combination of child *objects*, *arrays*, and *values*. To access a specific object, you must
+know the unique ID of that object.
+
+## Album Object
+The **Album** object contains info about one of the user's albums in OneDrive. Albums are 
+stored at the root level of a user's OneDrive and can contain a combination of photos, videos, 
+audio, files, and folders.
+
+The **wl.photos** scope is required to access albums. You can also use **wl.contacts_photos** scope
+to read any album, photo, video, or audio that other users have shared with the current user.
+
+### Album Properties
+The album object contains the following properties:
+
+- `id` (string, readonly) - The album object's ID.
+- `from` (Author object, readonly) - Information about the user who authored the album.
+- `name` (string, read-write) - Name of the album. This property is required when creating the object.
+- `description` (string, read-write) - A description of the album, or null if no description is specified.
+- `parent_id` (string, readonly) - The resource ID of the parent of the album.
+- `upload_location` (string, readonly) - The URL to upload items to the album, hosted in OneDrive. Requires the **wl.skydrive** scope.
+- `is_embeddable` (boolean, readonly) - A value that indicates whether this album can be embedded. If the album can be embedded, this value is **true**; otherwise, it is **false**.
+- `count` (number, readonly) - The total number of items in the album.
+- `link` (string, readonly) - A URL of the album, hosted in OneDrive.
+- `type` (string, readonly) - The type of object, in this case "album".
+- `shared_with` (object, readonly) - An object that defines who this album has been shared with.
+- `created_time` (string, readonly) - The time, in ISO 8601 format, at which the album was created.
+- `updated_time` (string, readonly) - The time, in ISO 8601 format, that the system updated the album last.
+- `client_updated_time` (string, readonly) - The time, in ISO 8601 format, that the file was last updated.
+
+## Audio Object
+The **Audio** object contains info about one of the user's audio in OneDrive.
+
+### Audio Properties
+The album object contains the following properties:
+
+- `id` (string, readonly) - The audio object's ID.
+- `from` (Author object, readonly) - Information about the user who authored the audio.
+- `name` (string, read-write) - Name of the audio file. This property is required when creating the object.
+- `description` (string, read-write) - A description of the audio, or null if no description is specified.
+- `parent_id` (string, readonly) - The resource ID of the parent of the audio
+- `size` (number, readonly) - The size, in bytes, of the audio.
+- `upload_location` (string, readonly) - The URL to upload items to the audio, hosted in OneDrive. Requires the **wl.skydrive** scope.
+- `comments_count` (number, readonly) - The number of comments associated with the audio.
+- `comments_enabled` (boolean, readonly) - A value that indicates whether comments are enabled for the audio. If comments can be made, this value is **true**; otherwise, it is **false**. 
+- `is_embeddable` (boolean, readonly) - A value that indicates whether this audio can be embedded. If the album can be embedded, this value is **true**; otherwise, it is **false**.
+- `source` (string, readonly) - The URL to use to download the audio from OneDrive. **Warning:** This value should not be persisted. Use it immediately after making the request and avoid caching.
+- `link` (string, readonly) - A URL of the audio, hosted in OneDrive.
+- `type` (string, readonly) - The type of object, in this case "audio".
+- `title` (string, read-write) - The audio's title.
+- `artist` (string, read-write) - The audio's artist name.
+- `album` (string, read-write) - The audio's album name.
+- `album_artist` (string, read-write) - The artist name of the audio's album.
+- `genre` (string, read-write) - The audio's genre.
+- `duration` (number, readonly) - The audio's playing time, in milliseconds.
+- `picture` (string, readonly) - A URL to view the audio's picture on OneDrive.
+- `shared_with` (object, readonly) - An object that defines who this audio has been shared with.
+- `created_time` (string, readonly) - The time, in ISO 8601 format, at which the audio was created.
+- `updated_time` (string, readonly) - The time, in ISO 8601 format, that the system updated the audio last.
+- `client_updated_time` (string, readonly) - The time, in ISO 8601 format, that the audio was last updated.
+
+
+## Author Object
+The Author object contains information about the user who authored or modified an album, file, folder,
+photo, video, or audio.
+
+### Author Properties
+The author object contains the following properties:
+
+- `name` (string, readonly) - The name of the user who authored the object.
+- `id` (string, readonly) - The ID of the user who authored the object.
+
+
+## Error Object
+The Error object contains information about an error that is requred by the Live Connect API.
+
+### Error Properties
+- `code` (string, readonly) - The error code.
+- `message` (string, readonly) - The error message, in the user's current locale.
+
+### Example
+            {
+                "error": {
+                    "code": "request_token_expired",
+                    "message": "The provided access token has expired."
+                }
+            }
+            
+## File Object
+The **File** object contains info about one of the user's files in OneDrive.
+
+### File Properties
+The file object contains the following properties:
+
+- `id` (string, readonly) - The file object's ID.
+- `from` (Author object, readonly) - Information about the user who authored the file.
+- `name` (string, read-write) - Name of the file. This property is required when creating the object.
+- `description` (string, read-write) - A description of the file, or null if no description is specified.
+- `parent_id` (string, readonly) - The resource ID of the parent of the file
+- `size` (number, readonly) - The size, in bytes, of the file.
+- `upload_location` (string, readonly) - The URL to upload file content.
+- `comments_count` (number, readonly) - The number of comments associated with the audio.
+- `comments_enabled` (boolean, readonly) - A value that indicates whether comments are enabled for the audio. If comments can be made, this value is **true**; otherwise, it is **false**. 
+- `is_embeddable` (boolean, readonly) - A value that indicates whether this audio can be embedded. If the album can be embedded, this value is **true**; otherwise, it is **false**.
+- `source` (string, readonly) - The URL to use to download the audio from OneDrive. **Warning:** This value should not be persisted. Use it immediately after making the request and avoid caching.
+- `link` (string, readonly) - A URL of the audio, hosted in OneDrive.
+- `type` (string, readonly) - The type of object, in this case "audio".
+- `shared_with` (object, readonly) - An object that defines who this audio has been shared with.
+- `created_time` (string, readonly) - The time, in ISO 8601 format, at which the audio was created.
+- `updated_time` (string, readonly) - The time, in ISO 8601 format, that the system updated the audio last.
+- `client_updated_time` (string, readonly) - The time, in ISO 8601 format, that the audio was last updated.
+- `sort_by` (string, read-write) - Sorts the items to specify the following criteria: updated, name, size or default.
+
+## Folder Object
+The **Folder** object contains info about one of the user's folders in OneDrive.
+
+### Folder Properties
+The folder object contains the following properties:
+
+- `id` (string, readonly) - The album object's ID.
+- `from` (Author object, readonly) - Information about the user who authored the album.
+- `name` (string, read-write) - Name of the album. This property is required when creating the object.
+- `description` (string, read-write) - A description of the album, or null if no description is specified.
+- `count` (number, readonly) - The total number of items in the album.
+- `link` (string, readonly) - A URL of the album, hosted in OneDrive.
+- `parent_id` (string, readonly) - The resource ID of the parent of the album.
+- `upload_location` (string, readonly) - The URL to upload items to the folder, hosted in OneDrive. Requires the **wl.skydrive** scope.
+- `is_embeddable` (boolean, readonly) - A value that indicates whether this album can be embedded. If the album can be embedded, this value is **true**; otherwise, it is **false**.
+- `type` (string, readonly) - The type of object, in this case "album".
+- `created_time` (string, readonly) - The time, in ISO 8601 format, at which the album was created.
+- `updated_time` (string, readonly) - The time, in ISO 8601 format, that the system updated the album last.
+- `client_updated_time` (string, readonly) - The time, in ISO 8601 format, that the file was last updated.
+- `shared_with` (object, readonly) - An object that defines who this album has been shared with.
+- `sort_by` (string, read-write) - Sorts the items to specify the following criteria: updated, name, size or default.
+
+
+## Permissions Object
+The **Permissions** object contains a list of scopes, showing those scopes to which the user has consented.
+
+The response body contains a JavaScript Object Notation (JSON) object that lists all consented scopes as a name/value pair. Each scope to which the user consented is present as a key.
+
+### Example
+            {
+               "data": [
+                    {         
+                        "wl.basic": 1,
+                        "wl.offline_access": 1,
+                        "wl.signin": 1,
+                        ...
+                    }
+                ]
+            }
+
+## Photo Object
+The **Photo** object contains info about a user's photos on Microsoft OneDrive.
+
+The Live Connect API supports creating, reading, updating, and deleting Photo objects. Use 
+the **wl.photos** scope to read Photo objects. Use the **wl.contacts_photos** scope to read 
+any albums, photos, videos, and audio that other users have shared with the user. Use the 
+**wl.skydrive_update** scope to create, update, or delete Photo objects.
+
+### Photo Properties
+The photo object contains the following properties:
+
+- `id` (string, readonly) - The file object's ID.
+- `from` (Author object, readonly) - Information about the user who authored the file.
+- `name` (string, read-write) - Name of the file. This property is required when creating the object.
+- `description` (string, read-write) - A description of the file, or null if no description is specified.
+- `parent_id` (string, readonly) - The resource ID of the parent of the file
+- `size` (number, readonly) - The size, in bytes, of the file.
+- `comments_count` (number, readonly) - The number of comments associated with the audio.
+- `comments_enabled` (boolean, readonly) - A value that indicates whether comments are enabled for the audio. If comments can be made, this value is **true**; otherwise, it is **false**. 
+- `tags_count` (number, readonly) - The number of tags on the photo.
+- `tags_enabled` (boolean, readonly) - A value that indicates whether tags are enabled for the phoot. If users can tag the photo, this value is **true**; otherwise, it is **false**.
+- `is_embeddable` (boolean, readonly) - A value that indicates whether this audio can be embedded. If the album can be embedded, this value is **true**; otherwise, it is **false**.
+- `picture` (string, readonly) - A URL of the photo's picture.
+- `source` (string, readonly) - The URL to use to download the audio from OneDrive. **Warning:** This value should not be persisted. Use it immediately after making the request and avoid caching.
+- `upload_location` (string, readonly) - The URL to upload file content.
+- `images` (array, readonly) - Information about various sizes of the photo that are available.
+- `link` (string, readonly) - A URL of the audio, hosted in OneDrive.
+- `when_taken` (string, readonly) The date, in ISO 8601 format, on which the photo was taken, or null if no date is specified.
+- `height` (number, readonly) The height, in pixels, of the photo.
+- `width` (number, readonly) The width, in pixels, of the photo.
+- `type` (string, readonly) - The type of object, in this case "photo".
+- `location` (object, readonly) - The location where the photo was taken. **Note:** the location object is not available for shared photos.
+- `camera_make` (string, readonly) - The manufacturer of the camera that took the phoot.
+- `camera_model` (string, readonly) - The brand and model number of the camera that took the photo.
+- `focal_ratio` (double, readonly) - The f-number that the photo was taken at.
+- `focal_length` (double, readonly) - The focal length that the photo was taken at, typically expressed in millimeters for newer lenses.
+- `exposure_numerator` (double, readonly) - The numerator of the shutter speed the photo was taken at.
+- `exposure_denominator` (double, readonly) - The denominator of the shutter speed the photo was taken at.
+- `shared_with` (object, readonly) - An object that defines who this audio has been shared with.
+- `created_time` (string, readonly) - The time, in ISO 8601 format, at which the audio was created.
+- `updated_time` (string, readonly) - The time, in ISO 8601 format, that the system updated the audio last.
+
+### Images Array
+Each object in the images array contains the following properties:
+
+- `height` (number) - Height of the image preview, in pixels.
+- `width` (number) - With of the image preview, in pixels.
+- `source` (string) - A URL to download the image preview
+- `type` (string) - The type of image preview availalbe (normal, album, thumbnail, full)
+
+### Location object
+The location property consists of an object with the following properties:
+
+- `latitude` (double) - The latitude portion of the location where the photo was taken, expressed as positive (north) or negative (south) degrees relative to the equator.
+- `longitude` (double) - The longitude portion of the location where the photo was taken, expressed as positive (east) or negative (west) degrees relative to the Prime Meridian.
+- `altitude` (double) - The altitude portion of the location where the photo was taken, expressed as positive (above) or negative (below) values relative to sea level, in units of measurement as determined by the camera.
+
+
