@@ -850,6 +850,34 @@ The album object contains the following properties:
 - `updated_time` (string, readonly) - The time, in ISO 8601 format, that the system updated the album last.
 - `client_updated_time` (string, readonly) - The time, in ISO 8601 format, that the file was last updated.
 
+### Example
+            {
+               "data": [
+                  {
+                     "id": "album.8c8ce076ca27823f.8C8CE076CA27823F!126",
+                     "from": {
+                        "name": "Roberto Tamburello",
+                        "id": "8c8ce076ca27823f"
+                     },
+                     "name": "My Sample Album 1", 
+                     "description": "",
+                     "parent_id": "folder.de57f4126ed7e411",
+                     "upload_location": "https://apis.live.net/v5.0/folder.de57f4126ed7e411.DE57F4126ED7E411!126/files/",
+                     "is_embeddable": true
+                     "count": 4, 
+                     "link": "https://cid-8c8ce076ca27823f.skydrive.live.com/redir.aspx?page\u003dself\u0026resid\u003d8C8CE076CA27823F!126\u0026type\u003d5", 
+                     "type": "album",
+                     "shared_with": {
+                        "access": "Everyone (public)"
+                     },
+                     "created_time": "2011-04-21T23:19:47+0000", 
+                     "updated_time": "2011-04-22T19:18:12+0000"
+                  }, {
+                     ...
+                  }
+               ]
+            }
+
 ## Audio Object
 The **Audio** object contains info about one of the user's audio in OneDrive.
 
@@ -881,6 +909,43 @@ The album object contains the following properties:
 - `updated_time` (string, readonly) - The time, in ISO 8601 format, that the system updated the audio last.
 - `client_updated_time` (string, readonly) - The time, in ISO 8601 format, that the audio was last updated.
 
+### Example
+            {
+               "data": [
+                  {
+                     "id": "file.a6b2a7e8f2515e5e.A6B2A7E8F2515E5E!144", 
+                     "from": {
+                        "name": "Stig Struve-Christensen", 
+                        "id": "a6b2a7e8f2515e5e"
+                     }, 
+                     "name": "SampleAudio.mp3", 
+                     "description": null, 
+                     "parent_id": "folder.a6b2a7e8f2515e5e", 
+                     "size": 8414449,
+                     "upload_location": "https://apis.live.net/v5.0/file.a6b2a7e8f2515e5e.A6B2A7E8F2515E5E!144/content/",  
+                     "comments_count": 0, 
+                     "comments_enabled": false, 
+                     "is_embeddable": false, 
+                     "source": "http://storage.live.com/s1p60U8Xs4UzIXTScrTioalE-ZaVFiDQBA15MS2BwcsuNjfG64Z2fw-DAjXnPuqC47YR40_xAoPD8aRGhtna9ZFZ9_oO4BTz4CWF973DTXMxc5U3TntcQ9qEA/SampleAudio.mp3:Binary", 
+                     "link": "https://skydrive.live.com/redir.aspx?cid\u003d22688711f5410e6c\u0026page\u003dview\u0026resid\u003d22688711F5410E6C!582\u0026parid\u003d22688711F5410E6C!581",
+                     "type": "audio",
+                     "title": "My Sample Audio",
+                     "artist": "My Favorite Artist",
+                     "album": "My Favorite Album",
+                     "album_artist": "My Favorite Artist", 
+                     "genre": "Easy Listening", 
+                     "duration": 225000,
+                     "picture": "https://storage.live.com/items/A6B2A7E8F2515E5E!144:MobileReady/SampleAudio.mp3?psid=1&ck=0&ex=720"   
+                     "shared_with": {
+                        "access": "Just me"
+                     }, 
+                     "created_time": "2012-09-23T22:00:57+0000", 
+                     "updated_time": "2012-09-03T22:00:57+0000"
+                  }, {
+                     ...
+                  }
+               ]      
+            }
 
 ## Author Object
 The Author object contains information about the user who authored or modified an album, file, folder,
@@ -892,6 +957,15 @@ The author object contains the following properties:
 - `name` (string, readonly) - The name of the user who authored the object.
 - `id` (string, readonly) - The ID of the user who authored the object.
 
+### Example
+            {
+            ...
+            "from": {
+                        "name": "Stig Struve-Christensen", 
+                        "id": "a6b2a7e8f2515e5e"
+                     },
+            ...         
+            }
 
 ## Error Object
 The Error object contains information about an error that is requred by the Live Connect API.
@@ -933,6 +1007,37 @@ The file object contains the following properties:
 - `client_updated_time` (string, readonly) - The time, in ISO 8601 format, that the audio was last updated.
 - `sort_by` (string, read-write) - Sorts the items to specify the following criteria: updated, name, size or default.
 
+### Example
+            {
+               "data": [
+                  {
+                     "id": "file.22688711f5410e6c.22688711F5410E6C!942", 
+                     "from": {
+                        "name": "William Flash", 
+                        "id": "22688711f5410e6c"
+                     }, 
+                     "name": "Processing.docx", 
+                     "description": null, 
+                     "parent_id": "folder.22688711f5410e6c.22688711F5410E6C!479", 
+                     "size": 12692, 
+                     "upload_location": "https://apis.live.net/v5.0/file.22688711f5410e6c.22688711F5410E6C!942/content/", 
+                     "comments_count": 0, 
+                     "comments_enabled": true, 
+                     "is_embeddable": false, 
+                     "source": "http://storage.live.com/s1pEwo9qzyT4_BJZqMNm-aVzgLo-WRsQGzjzFsXjyREuQG5pDYr237vKz3i2pmqFuniYPzsuIZAOCUMB_gdfKCUpLpVcaAMXGrk4T7jOWenRniCv9vex7GWfSvy-XCVBVnU/Processing.docx:Binary", 
+                     "link": "https://skydrive-df.live.com/redir.aspx?cid\u003d22688711f5410e6c\u0026page\u003dview\u0026resid\u003d22688711F5410E6C!942\u0026parid\u003d22688711F5410E6C!479", 
+                     "type": "file", 
+                     "shared_with": {
+                        "access": "Everyone (public)"
+                     }, 
+                     "created_time": "2011-10-12T23:18:23+0000", 
+                     "updated_time": "2011-10-12T23:18:23+0000"
+                  },{
+                     ...
+                  }
+               ]
+            }
+
 ## Folder Object
 The **Folder** object contains info about one of the user's folders in OneDrive.
 
@@ -955,6 +1060,33 @@ The folder object contains the following properties:
 - `shared_with` (object, readonly) - An object that defines who this album has been shared with.
 - `sort_by` (string, read-write) - Sorts the items to specify the following criteria: updated, name, size or default.
 
+### Example
+            {
+               "data": [
+                  {
+                     "id": "folder.8c8ce076ca27823f.8C8CE076CA27823F!142", 
+                     "from": {
+                        "name": "Roberto Tamburello", 
+                        "id": "8c8ce076ca27823f"
+                     }, 
+                     "name": "My Sample Folder in Album 1", 
+                     "description": "",
+                     "parent_id": "folder.de57f4126ed7e411", 
+                     "upload_location": "https://apis.live.net/v5.0/folder.de57f4126ed7e411.DE57F4126ED7E411!126/files/", 
+                     "is_embeddable": true, 
+                     "count": 3, 
+                     "link": "https://cid-8c8ce076ca27823f.skydrive.live.com/redir.aspx?page\u003dself\u0026resid\u003d8C8CE076CA27823F!142\u0026parid\u003d8C8CE076CA27823F!126\u0026type\u003d5", 
+                     "type": "folder", 
+                     "shared_with": {
+                         "access": "Just me"
+                     },
+                     "created_time": "2011-04-22T00:36:30+0000", 
+                     "updated_time": "2011-04-22T19:18:12+0000"
+                  }, {
+                     ...
+                  }
+               ]
+            }
 
 ## Permissions Object
 The **Permissions** object contains a list of scopes, showing those scopes to which the user has consented.
@@ -1030,4 +1162,73 @@ The location property consists of an object with the following properties:
 - `longitude` (double) - The longitude portion of the location where the photo was taken, expressed as positive (east) or negative (west) degrees relative to the Prime Meridian.
 - `altitude` (double) - The altitude portion of the location where the photo was taken, expressed as positive (above) or negative (below) values relative to sea level, in units of measurement as determined by the camera.
 
-
+### Example
+            {
+               "data": [
+                  {
+                     "id": "file.de57f4126ed7e411.DE57F4126ED7E411!128", 
+                     "from": {
+                        "name": "Nuno Bento", 
+                        "id": "de57f4126ed7e411"
+                     }, 
+                     "name": "Maui-2012_0034.JPG", 
+                     "description": null, 
+                     "parent_id": "folder.de57f4126ed7e411.DE57F4126ED7E411!126", 
+                     "size": 561683, 
+                     "comments_count": 1, 
+                     "comments_enabled": true, 
+                     "tags_count": 0, 
+                     "tags_enabled": true,
+                     "is_embeddable": true, 
+                     "picture": "http://storage.live.com/s1pKk5vzd-gdPanbzKYhB0nQGn8wGq5DSgqvrgIHU1NTXA4e2-spGkAhQjW1d9pcgKAGLB4NsEsSvDoREmdx5w-JiFrinEJJuEoz08Ws_IFupkX2bPSvy5qmths9ijwvDrXi1OBCWk9GW9Kt-qNNOAA9g/Maui09_0034.JPG:Thumbnail", 
+                     "source": "http://storage.live.com/s1pKk5vzd-gdPanbzKYhB0nQGn8wGq5DSgqvrgIHU1NTXA4e2-spGkAhQjW1d9pcgKAGLB4NsEsSvDoREmdx5w-JiFrinEJJuEoz08Ws_IFupkX2bPSvy5qmths9ijwvDrXi1OBCWk9GW9Kt-qNNOAA9g/Maui09_0034.JPG:HighRes", 
+                     "upload_location": "https://apis.live.net/v5.0/file.de57f4126ed7e411.DE57F4126ED7E411!128/content/", 
+                     "images": [
+                        {
+                           "height": 450, 
+                           "width": 600, 
+                           "source": "http://storage.live.com/s1pKk5vzd-gdPanbzKYhB0nQGn8wGq5DSgqvrgIHU1NTXA4e2-spGkAhQjW1d9pcgKAGLB4NsEsSvDoREmdx5w-JiFrinEJJuEoz08Ws_IFupkX2bPSvy5qmths9ijwvDrXi1OBCWk9GW9Kt-qNNOAA9g/Maui09_0034.JPG:WebReady", 
+                           "type": "normal"
+                        }, {
+                           "height": 132, 
+                           "width": 176, 
+                           "source": "http://storage.live.com/s1pKk5vzd-gdPanbzKYhB0nQGn8wGq5DSgqvrgIHU1NTXA4e2-spGkAhQjW1d9pcgKAGLB4NsEsSvDoREmdx5w-JiFrinEJJuEoz08Ws_IFupkX2bPSvy5qmths9ijwvDrXi1OBCWk9GW9Kt-qNNOAA9g/Maui09_0034.JPG:MobileReady", 
+                           "type": "album"
+                        }, {
+                           "height": 72, 
+                           "width": 96, 
+                           "source": "http://storage.live.com/s1pKk5vzd-gdPanbzKYhB0nQGn8wGq5DSgqvrgIHU1NTXA4e2-spGkAhQjW1d9pcgKAGLB4NsEsSvDoREmdx5w-JiFrinEJJuEoz08Ws_IFupkX2bPSvy5qmths9ijwvDrXi1OBCWk9GW9Kt-qNNOAA9g/Maui09_0034.JPG:Thumbnail", 
+                           "type": "thumbnail"
+                        }, {
+                           "height": 1200, 
+                           "width": 1600, 
+                           "source": "http://storage.live.com/s1pKk5vzd-gdPanbzKYhB0nQGn8wGq5DSgqvrgIHU1NTXA4e2-spGkAhQjW1d9pcgKAGLB4NsEsSvDoREmdx5w-JiFrinEJJuEoz08Ws_IFupkX2bPSvy5qmths9ijwvDrXi1OBCWk9GW9Kt-qNNOAA9g/Maui09_0034.JPG:HighRes", 
+                           "type": "full"
+                        }
+                     ], 
+                     "link": "https://skydrive.live.com/redir.aspx?cid\u003dde57f4126ed7e411\u0026page\u003dview\u0026resid\u003dDE57F4126ED7E411!128\u0026parid\u003dDE57F4126ED7E411!126", 
+                     "when_taken": "2008-03-24T23:41:53+0000", 
+                     "height": 1200, 
+                     "width": 1600, 
+                     "type": "photo",
+                     "location": {
+                         "latitude": 47.65316, 
+                         "longitude": -122.135911,
+                         "altitude": 43
+                     }, 
+                     "camera_make": "MyManufacturer",
+                     "camera_model": "MyModel",
+                     "focal_ratio": 2.8,
+                     "focal_length": 3.85,
+                     "exposure_numerator": 1,
+                     "exposure_denominator": 15, 
+                     "shared_with": {
+                        "access": "Everyone (public)"
+                     }, 
+                     "created_time": "2012-12-03T18:14:03+0000", 
+                     "updated_time": "2012-12-03T18:31:01+0000"
+                  }, {
+                     ...
+                  }
+               ]      
+            }
