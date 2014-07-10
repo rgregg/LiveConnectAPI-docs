@@ -221,7 +221,7 @@ Deletes the specified folder from the user's OneDrive. The **wl.skydrive_update*
 # Group Working with Folder Contents
 How to download, upload, enumerate files in a folder, and search for files.
 
-## Folder Contents [/me/skydrive/{folder_id}/files]
+## Folder Contents [/me/skydrive/{folder_id}/files{?access_token}]
 
 + Model (application/json)
 
@@ -253,8 +253,7 @@ How to download, upload, enumerate files in a folder, and search for files.
                 ]
             }
 
-# GET /me/skydrive/{folder_id}/files{?access_token}
-Enumerate the files within the specified folder.
+### Enumerate files within the specified folder [GET]
 
 + Parameters
 
@@ -262,12 +261,13 @@ Enumerate the files within the specified folder.
 
     + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
 
-
 + Response 200
     
     [Folder Contents][]
 
-# GET /me/skydrive/{folder_id}/files{?filter,access_token}
+## Folder Contents - Filtered [/me/skydrive/{folder_id}/files{?filter,access_token}]
+
+### Filter the returned types of files [GET]
 Filter the returned types of files to specific values
 
 + Parameters
@@ -288,7 +288,9 @@ Filter the returned types of files to specific values
 
     [Folder Contents][]
 
-# GET /me/skydrive/{folder_id}/files{?limit,offset,access_token}
+## Folder Contents - Paging [/me/skydrive/{folder_id}/files{?limit,offset,access_token}]
+
+### Paged Folder Content Results [GET]
 The limit and offset query parameters can be used to page the results of a larger folder.
 
 + Parameters
@@ -303,7 +305,11 @@ The limit and offset query parameters can be used to page the results of a large
 
     [Folder Contents][]
 
-# PUT /me/skydrive/{folder_id}/files/{file_name}{?access_token}{&overwrite}
+# Group Working with Files
+
+## Uploading Files [/me/skydrive/{folder_id}/files/{file_name}{?access_token,overwrite}]
+
+### Upload File To Folder [PUT]
 Upload the contents of a file, or optionally replace the contents of an existing file.
 
 + Parameters
@@ -326,9 +332,9 @@ Upload the contents of a file, or optionally replace the contents of an existing
 
 + Response 200
 
-# Group Working with File Contents
+## File Metadata [/me/skydrive/{file_id}{?access_token}]
 
-# PUT /me/skydrive/{file_id}{?access_token}
+### Overwrite File Metadata [PUT]
 Change the data stored about a file, photo, video, or audio. The **wl.skydrive_update** scope is required.
 
 + Parameters
@@ -362,7 +368,36 @@ Change the data stored about a file, photo, video, or audio. The **wl.skydrive_u
             
 + Response 200
 
-# POST /me/skydrive/files{?access_token,state,redirect_uri}
+## Download [/me/skydrive/{file_id}/content{?access_token,download}]
+
+### Download Binary Stream [GET]
+
+Download the contents of a file, photo, video, or audio. The **wl.skydrive** scope is required.
+
+**Tip** You can instruct the user's web browser to prompt the user to save the file that's downloading 
+instead of having the browser try to download and display the file directly in its own window. To do 
+this, set the optional download parameter to true. This will add the `Content-Disposition: attachment` 
+header to the response.
+
++ Parameters
+
+    + file_id (required, string, `file.abcd1234.abcd1234!567`) ... ID for the file to download
+    
+    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
+    
+    + download = `false` (optional, boolean) ... Use the download parameter to set the Content-Disposition header on the response.
+    
+        + Values
+        
+            + `false`
+            + `true`
+
++ Response 200
+
+## Alternative Methods [/me/skydrive/files{?access_token,state,redirect_uri}]
+
+### Upload using POST [POST]
+
 Upload a file to a folder, for clients that cannot support the PUT operation. This method should be 
 avoided if possible. When using **POST** method the contents of the request must be formatted as
 multipart/form-data. You provide the file to upload in a multipart section, while providing the 
@@ -411,28 +446,7 @@ to the uploaded file.
 
 + Response 200
 
-# GET /me/skydrive/{file_id}/content{?access_token,download}
-Download the contents of a file, photo, video, or audio. The **wl.skydrive** scope is required.
 
-**Tip** You can instruct the user's web browser to prompt the user to save the file that's downloading 
-instead of having the browser try to download and display the file directly in its own window. To do 
-this, set the optional download parameter to true. This will add the `Content-Disposition: attachment` 
-header to the response.
-
-+ Parameters
-
-    + file_id (required, string, `file.abcd1234.abcd1234!567`) ... ID for the file to download
-    
-    + access_token (optional, string, `abcd123456`) ... Access token from authentication, if not using Authentication header.
-    
-    + download = `false` (optional, boolean) ... Use the download parameter to set the Content-Disposition header on the response.
-    
-        + Values
-        
-            + `false`
-            + `true`
-
-+ Response 200
 
 
 ## Move and Copy Files or Folders [/me/skydrive/{file_or_folder_id}{?access_token}]
@@ -484,7 +498,7 @@ To find a file or folder with a particular name across a user's OneDrive, use th
 # Group Account Information
 To access a user's data, the **wl.basic** scope must be requested during authorization.
 
-## User Information [/me]
+## User Information [/{user_id}{?access_token}]
 
 + Model (application/json)
 
@@ -497,7 +511,7 @@ To access a user's data, the **wl.basic** scope must be requested during authori
                 "locale": "en_US"
             }
 
-# GET /{user_id}{?access_token}
+### Retrieve User Information [GET]
 Retrieve user information for a contact specified by `user_id`. You can use the shortcut `me` to reference
 the signed in user.
 
@@ -515,7 +529,9 @@ the signed in user.
 
     [User Information][]
 
-# GET /{user_id}/friends{?access_token}
+## Friends List [/{user_id}/friends{?access_token}]
+
+### Retrieve Friends List [GET]
 Retrieve the friends of the contact specified by `user_id`. You can use the shortcut `me` to reference
 the signed in user.
 
@@ -563,7 +579,10 @@ read-write link for the same file, read-only permission for that link is revoked
 requests a read-write link for a file and then later requests a read-only link for that same file, read-write
 permission for that link is revoked.
 
-# GET /{file_or_folder_id}/shared_read_link{?access_token}
+## Sharing - Read Only Link [/{file_or_folder_id}/shared_read_link{?access_token}]
+
+### Generate or retrieve a link [GET]
+
 Get a read-only link to the file or folder. **Note** requesting this link will replace any previously requested read-write link.
 
 + Parameters
@@ -576,7 +595,10 @@ Get a read-only link to the file or folder. **Note** requesting this link will r
 
             { "link": "https://onedrive.live.com/redir.aspx?cid=..." }
 
-# GET /{file_or_folder_id}/shared_edit_link{?access_token}
+## Sharing - Read Write Link [/{file_or_folder_id}/shared_edit_link{?access_token}]
+
+### Generate or retireve a link [GET]
+
 Get a read-write link to the file or folder. **Note** requesting this link will replace any previously requested read-only link.
 
 + Parameters
@@ -589,7 +611,9 @@ Get a read-write link to the file or folder. **Note** requesting this link will 
 
             { "link": "https://onedrive.live.com/redir.aspx?cid=..." }
 
-# GET /{file_id}/embed{?access_token}
+## Sharing - Embed Content [/{file_id}/embed{?access_token}] 
+
+### Get Embed HTML Snippet [GET]
 Get HTML definition for embedding this file in another page.
 
 + Parameters
@@ -602,7 +626,10 @@ Get HTML definition for embedding this file in another page.
 
             { "embed_html": "<iframe src=\"https://onedrive.live.com/....\"></iframe>" }
 
-# GET /skydrive/get_item_preview{?type,url}
+## Sharing - Get Shared File Preview [/skydrive/get_item_preview{?type,url}]
+
+### Get Item Preview [GET]
+
 Get a preview of an item by providing the sharing link to the item.
 
 Four preview types are available:
@@ -651,7 +678,9 @@ ampersand (&) character.
 # Group Shared Files
 To discover all OneDrive objects that are shared with the signed-in user, your app needs the **wl.contacts_skydrive** scope.
 
-# GET /me/skydrive/shared{?access_token}
+## Shared By Signed In User [/me/skydrive/shared{?access_token}]
+
+### List files shared by signed-in user [GET]
 Retrieve a list of all files the signed in user is currently sharing.
 
 + Parameters
@@ -662,7 +691,10 @@ Retrieve a list of all files the signed in user is currently sharing.
 
     [Folder Contents][]
 
-# GET /{user_id}/shared{?access_token}
+## Shared By Another User [/{user_id}/shared{?access_token}]
+
+### List files accessible by signed-in user [GET]
+
 Retrieve a list of all files the specified user has shared with the signed-in user.
 
 + Parameters
@@ -680,7 +712,10 @@ Retrieve a list of all files the specified user has shared with the signed-in us
 
 # Group Recent Files
 
-# GET /me/skydrive/recent_docs{?access_token}
+## Most Recently Used [/me/skydrive/recent_docs{?access_token}]
+
+### List Recent Files [GET]
+
 Return a list of files that have recently be used by the user. The **wl.skydrive** scope is required.
 
 + Parameters
@@ -694,7 +729,10 @@ Return a list of files that have recently be used by the user. The **wl.skydrive
 
 # Group Quota Management
 
-# GET /me/skydrive/quota{?access_token}
+## Quota [/me/skydrive/quota{?access_token}]
+
+### Sign-in User Quota [GET]
+
 Use this API to determine the user's total OneDrive quota space and how much is still available. Values
 are returned in bytes.
 
