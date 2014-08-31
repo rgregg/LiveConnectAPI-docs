@@ -1,4 +1,4 @@
 LiveConnectAPI-docs
 ===================
 
-Documentation for the Live Connect API
+Sample documentation for the Live Connect API using Apiary's API Blueprint format. For experimentation only.
